@@ -1,0 +1,11 @@
+#keytool -genkeypair -alias tomcat -keyalg RSA -keystore /usr/local/tomcat/keystore
+//-genkeypair 生成密钥对
+//-alias tomcat 密钥别名
+//-keyalg RSA   定义密钥算法为RSA算法
+//-keystore 定义密钥文件存放在：/usr/local/tomcat/keystore
+#vim /usr/local/tomcat/conf/server.xml
+.......
+<Connector port="8443".....
+  keystoreFile="/usr/local/tomcat/keystore" keystorePass="123456"....../>
+  ......
+  
