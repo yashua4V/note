@@ -1,6 +1,72 @@
 nginx 依赖包
 gcc openssl-devel pcer-devel
 nginx 安装模块
---with-http_ssl_module
---with-stream
---with-http_stub_status_module
+  --with-http_ssl_module
+  --with-stream
+  --with-http_stub_status_module
+  --    
+nginx 用户认证
+     server {
+              ... ...
+              auth_basic "input password";
+              auth_basic "/usr/local/nginx/pass";
+              ... ...
+            }
+     生成密码文件，创建用户及密码
+     yum -y install httpd-tools
+     htpasswd -c /usr/local/nginx/pass tom
+     htpasswd /usr/local/nginx/pass jerry
+     重启服务加载配置
+nginx 基于域名的虚拟主机
+     server {
+          ... ...
+          server_name www.a.com;
+          location / {
+                       root html;
+                       index index.html index.htm;
+                  }
+       }
+       ... ...
+      server {
+          ... ...
+          server_name www.b.com;
+          location / {
+                        root www;
+                        index index.html index.php index.htm;
+                   }
+         }
+nginx 基于端口的虚拟主机
+       server {
+                   listen 8080;
+                   server_name web1.example.com;
+                   ... ...
+         }
+       server {
+                    listen 8000;
+                    server_name web1.example.com;
+                   ... ...
+          }
+nginx 基于IP的虚拟主机 
+         server {
+               listen 192.168.0.1:80;
+               server_name web1.example.com;
+           ... ...
+         }
+            server {
+                 listen 192.168.0.2:80;
+                 server_name web1.example.com;
+           ... ...
+         }
+nginx SSL虚拟主机
+      cd /usr/local/nginx/conf
+      openssl genrsa  >  cert.key                     //生成私钥
+      openssl req -new -x509 -key cert.key > cert.pem //生成证书
+      vim /usr/local/nginx/conf/nginx.conf
+             server {
+                      listen 443 ssl;
+                      server_name  www.c.com;
+                      ssl_certificate cert.pem;
+                      ssl_certificate_key cert.key;
+                      
+                      ssl_session_cache    shared:SSL:1m;
+                      ssl_session_timeout  5m;
