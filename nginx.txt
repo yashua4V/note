@@ -70,3 +70,34 @@ nginx SSL虚拟主机
                       
                       ssl_session_cache    shared:SSL:1m;
                       ssl_session_timeout  5m;
+                      
+                      ssl_ciphersHIGH:!aNULL:!MD5;
+                      ssl_prefer_server_ciphers on;
+                      
+                      ... ...
+                     }
+    LNMP环境
+      L-------linux系统
+      N-------NGINX WEB服务
+      M-------Mariadb 数据库
+      P-------PHP PHP 平台
+        一，安装软件
+          基础依赖包
+         gcc openssl-devel pcredevel zlib-devel
+          源码安装NGINX
+         ./configure --user=nginx --group=nginx  \  //指定启动服务的用户与组
+        > --with-http_ssl_module  //添加SSL加密模块
+          安装MariaDB
+         yum -y install mariadb mariadb-server mariadb-devel
+          PHP和PHP-fpm
+          yum -y install php php-mysql php-fpm-5.4.16-42.el7.x86_64.rpm
+        二，启动服务
+        三，php-fpm配置文件
+        vim /etc/php-fpm.d/www.conf
+        [www]
+        listen = 127.0.0.1:9000 //PHP端口号
+        pm.max_children = 32 //最大进程数量
+        pm.start_servers = 15 //最小进程数量
+        pm.min_spare_servers = 5 //最少需要几个空闲着的进程
+        pm.max_spare_servers = 32 //最多允许几个进程处于空闲状态
+        
