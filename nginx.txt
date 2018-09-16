@@ -9,7 +9,7 @@ nginx 用户认证
      server {
               ... ...
               auth_basic "input password";
-              auth_basic "/usr/local/nginx/pass";
+              auth_basic_user_file "/usr/local/nginx/pass";
               ... ...
             }
      生成密码文件，创建用户及密码
@@ -100,4 +100,48 @@ nginx SSL虚拟主机
         pm.start_servers = 15 //最小进程数量
         pm.min_spare_servers = 5 //最少需要几个空闲着的进程
         pm.max_spare_servers = 32 //最多允许几个进程处于空闲状态
-        
+        四，修改Nginx配置文件并启动服务
+        # vim /usr/local/nginx/conf/nginx.conf
+location / {
+            root   html;
+            index  index.php  index.html   index.htm;
+#设置默认首页为index.php，当用户在浏览器地址栏中只写域名或IP，不说访问什么页面时，服务器会把默认首页index.php返回给用户
+        }
+ location  ~  \.php$  {
+            root           html;
+            fastcgi_pass   127.0.0.1:9000;    #将请求转发给本机9000端口，PHP解释器
+            fastcgi_index  index.php;
+            #fastcgi_param   SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+            include        fastcgi.conf;
+        }
+[root@proxy ~]# /usr/local/nginx/sbin/nginx -s reload
+#请先确保nginx是启动状态才可以执行命令成功，否则报错,报错信息如下：
+#[error] open() "/usr/local/nginx/logs/nginx.pid" failed (2: No such file or directory)
+        五，创建PHP页面，测试LNMP架构能否解析PHP页面
+        # vim /usr/local/nginx/html/test1.php
+        <?php 
+        $i="This is a test Page";
+        echo $i;
+        ?>
+        创建PHP测试页面,连接并查询MariaDB数据库。
+        #vim /usr/local/nginx/html/test2.php
+<?php
+$mysqli = new mysqli('localhost','root','密码','mysql');
+//注意：root为mysql账户名称，密码需要修改为实际mysql密码，无密码则留空即可
+if (mysqli_connect_errno()){
+    die('Unable to connect!'). mysqli_connect_error();
+}
+$sql = "select * from user";
+$result = $mysqli->query($sql);
+while($row = $result->fetch_array()){
+    printf("Host:%s",$row[0]);
+    printf("</br>");
+    printf("Name:%s",$row[1]);
+    printf("</br>");
+}
+?>      
+        六，LNMP常见问题
+        Nginx的默认访问日志文件为/usr/local/nginx/logs/access.log
+        Nginx的默认错误日志文件为/usr/local/nginx/logs/error.log
+        PHP默认错误日志文件为/var/log/php-fpm/www-error.log
+        如果动态网站访问失败，可用参考错误日志，查找错误信息。
