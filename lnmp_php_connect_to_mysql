@@ -1,0 +1,44 @@
+                            MySQLi - 面向对象
+<?php
+header('Content-Type: text/html;charset=utf-8');
+
+//echo phpinfo();
+
+// MySQLi面向对象
+// 在我们访问MySQL数据库之前，我们需要先连接到数据库服务器
+$servername = "localhost";
+$username = "root";
+$password = "";
+
+// 创建连接
+$conn = new mysqli($servername, $username, $password);
+
+// 检测连接
+if($conn -> connect_error)
+{
+    die("连接失败：". $conn->connect_error);
+}
+
+echo "连接成功";
+?>
+                            MySQLi - 面向过程
+<?php
+header('Content-Type: text/html; charset=utf-8');
+
+// MySQLi - 面向过程
+$servername = "localhost";
+$username = "root";
+$password = "";
+
+// 创建连接
+$conn = mysqli_connect($servername, $username, $password);
+
+// 检测连接
+if(!$conn)
+{
+    die("连接失败：" . mysqli_connect_error());
+}
+
+echo "连接成功";
+?>
+复制代码
