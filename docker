@@ -1,0 +1,22 @@
+vim /etc/docker/daemon.json
+{
+"insecure-registries":["192.168.1.10:5000"]
+}
+docker run -d -p 5000:5000 registry
+docker tag busybox:latest 192.168.1.10:5000/busybox:latest
+docker push 192.168.1.10:5000/busybox:latest
+
+简单API
+查看仓库 http://192.168.1.10:5000/v2/_catalog
+查看标签 http://192.168.1.10:5000/v2/<repo>/tags/list
+error response from daemon: Error running DeviceCreate (createSnapDevice) dm_task_run failed
+解决办法：
+
+# systemctl stop docker.service
+# thin_check /var/lib/docker/devicemapper/devicemapper/metadata
+1
+2
+如果还有问题，则：
+
+# thin_check --clear-needs-check-flag /var/lib/docker/devicemapper/devicemapper/metadata
+# systemctl start docker.service
