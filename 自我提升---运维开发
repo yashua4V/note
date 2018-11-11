@@ -1,0 +1,8 @@
+DevOps 工具链:
+   git 代码管理版本控制
+   python shell 开发语言
+   jenkins      流程控制管理工具
+   ansible      批量安装部署
+docker       kvm
+k8s           openstack
+     cloud
