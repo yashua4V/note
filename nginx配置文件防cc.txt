@@ -1,0 +1,19 @@
+#    limit_conn_zone $binary_remote_addr zone=perip:10m;
+#    limit_conn_zone $server_name zone=perserver:10m;    
+     map $http_x_forwarded_for  $clientrealip
+{
+    ""    $remote_addr;
+    ~^(?P<firstAddr>[0-9\.]+),?.*$    $firstAddr;
+}
+     map $request $limitkey
+{
+    default "$http_referer,$request,$http_user_agent";
+}
+
+
+#    limit_conn_zone $clientrealip zone=TotalConnLimitZone:20m;
+#    limit_conn  TotalConnLimitZone  50;
+#    limit_req_zone $clientrealip zone=one:10m rate=10r/s;
+    limit_req_zone $limitkey zone=agent:10m rate=10r/s;
+    limit_req zone=agent burst=5;
+#    limit_req zone=one burst=5;
